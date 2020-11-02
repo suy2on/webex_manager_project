@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ㅎㅇ campus manager 로그인페이지</title>
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+
+        let id
+
+        function openClose() {
+            // add-box의 display 값이 block 이면(= 눈에 보이면)
+            if ($(".join-box").css("display") == "block") {
+                // add-box를 가리고
+                $(".join-box").hide();
+            } else {
+                // 아니면(눈에 보이지 않으면) post-box를 펴라
+                $(".join-box").show();
+            }
+        }
+
+        function join() {
+            id = $('.new-id').val()
+            let name = $('.new-name').val()
+
+            $.ajax({
+                type: "GET",
+                url: "/join",
+                data: {},
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        let all_users = response['data']
+                        let pass = 0
+
+                        for (let i = 0; i < all_users.length; i++) {
+                            let old_id = all_users[i]['id']
+                            if (old_id == id) {
+                                pass = 1
+                                break
+                            }
+
+                        }
+
+                        if (pass) {
+                            $.ajax({
+                                type: "POST",
+                                url: "/join",
+                                data: {'url_give': url, 'comment_give': comment},
+                                success: function (response) { // 성공하면
+                                    if (response["result"] == "success") {
+
+                                        location.reload()
+                                    }
+                                }
+                            })
+                        }
+                        else
+                            alert('이미있는 아이디입니다.')
+                    }
+                }
+            })
+        }
+
+
+    </script>
+    <style type="text/css">
+        .title {
+            width: 1000px;
+            height: 100px;
+            border-style: solid;
+            border-color: black;
+            text-align: center;
+            margin: 40px auto;
+            padding-top: 20px;
+        }
+
+        .login-box, .join-box {
+            width: 500px;
+            height: 300px;
+            border-style: solid;
+            border-color: black;
+            text-align: center;
+            margin: 40px auto;
+            padding-top: 90px;
+
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="title">
+    <h1>ㅎㅇ CAMPUS MANAGER</h1>
+
+</div>
+<div class="login-box">
+    <h4>
+        로그인
+    </h4>
+    <p>
+        ID: <input class="id">
+    </p>
+    <p>
+        <button onclick="openClose()">회원가입</button>
+        <button>로그인</button>
+    </p>
+</div>
+<div class="join-box" style="display: none">
+    <h4>
+        회원가입
+    </h4>
+    <p>
+        ID: <input class="new-id">
+    </p>
+    <p>
+        이름: <input class="new-name">
+    </p>
+    <p>
+        <button>가입하기</button>
+    </p>
+</div>
+</body>
+</html>
