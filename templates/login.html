@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ㅎㅇ campus manager 로그인페이지</title>
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+
+
+        function openClose() {
+            // add-box의 display 값이 block 이면(= 눈에 보이면)
+            if ($(".join-box").css("display") == "block") {
+                // add-box를 가리고
+                $(".join-box").hide();
+            } else {
+                // 아니면(눈에 보이지 않으면) post-box를 펴라
+                $(".join-box").show();
+            }
+        }
+
+        function join() {
+            let id = $('#userid').val()
+            let name = $('#username').val()
+            let pw = $('#password').val()
+            let repw = $('#re_password').val()
+
+            if (!(id && name && pw && repw))
+                alert("모두 입력해주세요")
+            else if (pw != repw)
+                alert("비밀번호를 확인해주세요")
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/join",
+                    data: {
+                        'id_give': id,
+                        'name_give': name,
+                        'pw_give': pw
+                    },
+                    success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                        if (response['result'] == 'success') {
+                            alert(response['msg'])
+                            location.reload()
+                        }
+                    }
+                })
+
+            }
+        }
+
+
+    </script>
+    <style type="text/css">
+        .title {
+            width: 1000px;
+            height: 100px;
+            border-style: solid;
+            border-color: black;
+            text-align: center;
+            margin: 40px auto;
+            padding-top: 20px;
+        }
+
+        .join-box {
+            margin: auto;
+            width: 500px;
+            height: 450px;
+
+        }
+
+        .login-box {
+            width: 500px;
+            height: 300px;
+            margin: auto;
+
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="title">
+    <h1>HONGIK CAMPUS MANAGER</h1>
+
+</div>
+<div class="login-box">
+    <h4>
+        로그인
+    </h4>
+    <form>
+        <div class="form-group">
+            <label for="userid">아이디</label>
+            <input type="text" class="form-control" id="id" placeholder="아이디" name="id_give"/>
+
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" class="form-control" id="pw" placeholder="비밀번호" name="pw_give"/>
+        </div>
+    </form>
+    <button type="submit" class="btn btn-primary" onclick="openClose()">회원가입</button>
+    <button type="submit" class="btn btn-primary">로그인</button>
+
+
+</div>
+<div class="join-box" style="display: none">
+    <h4>
+        회원가입
+    </h4>
+    <form>
+        <div class="form-group">
+            <label for="userid">아이디</label>
+            <input type="text" class="form-control" id="userid" placeholder="아이디" name="id_give"/>
+            <!-- 마지막에 name과 app.py의 get 메소드 사용하는 부분이 일치해야 상응한다 -->
+        </div>
+        <div class="form-group">
+            <label for="username">사용자 이름</label>
+            <input type="text" class="form-control" id="username" placeholder="사용자 이름" name="name_give"/>
+
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" class="form-control" id="password" placeholder="비밀번호" name="pw_give"/>
+        </div>
+        <div class="form-group">
+            <label for="re_password">비밀번호확인</label>
+            <input type="password" class="form-control" id="re_password" placeholder="비밀번호확인" name="repw_give"/>
+        </div>
+    </form>
+    <button type="submit" class="btn btn-primary" onclick="join()">등록</button>
+
+</div>
+</body>
+</html>

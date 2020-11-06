@@ -19,6 +19,22 @@
 
         });
 
+        function home() {
+            $.ajax({
+                type: "GET",
+                url: "/home",
+                data: {},
+                success: function (response) { // 성공하면
+                    if (response["result"] == "success") {
+                        let name = response['data']
+                        let tempHtml = `<h1> ${name}CAMPUS MANAGER</h1>`
+                        $('.title').append(tempHtml)
+                    }
+                }
+            })
+
+        }
+
 
     </script>
     <style type="text/css">
@@ -31,10 +47,12 @@
             margin: 40px auto;
             padding-top: 20px;
         }
-        .card{
+
+        .card {
             margin: 100px auto;
         }
-        .card-body{
+
+        .card-body {
             text-align: center;
         }
 
@@ -43,7 +61,7 @@
 </head>
 <body>
 <div class="title">
-    <h1> 이수연님의 ㅎㅇ CAMPUS MANAGER</h1>
+#누구님의 campus manager
 
 </div>
 <div class="menu">
