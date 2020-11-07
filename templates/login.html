@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ㅎㅇ campus manager 로그인페이지</title>
+    <title>HONGIK campus manager 로그인페이지</title>
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
@@ -33,12 +33,17 @@
 
         function join() {
             let id = $('#userid').val()
-            let name = $('#username').val()
+            //let name = $('#username').val()
             let pw = $('#password').val()
             let repw = $('#re_password').val()
+            let email=$('#useremail').val()
 
-            if (!(id && name && pw && repw))
+            if (!(id && pw && repw && email))
                 alert("모두 입력해주세요")
+            else if (!is_id(id))
+                alert('아이디가 학번인지 확인해주세요')
+            else if (exist_id(id))
+                alert('이미 있는 아이디 입니다')
             else if (pw != repw)
                 alert("비밀번호를 확인해주세요")
             else {
@@ -47,8 +52,8 @@
                     url: "/join",
                     data: {
                         'id_give': id,
-                        'name_give': name,
-                        'pw_give': pw
+                        'pw_give': pw,
+                        'email_give':email
                     },
                     success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
                         if (response['result'] == 'success') {
@@ -59,6 +64,62 @@
                 })
 
             }
+        }
+
+        function login(){
+            let id=$('#id').val()
+            let pw=$('#pw').val()
+
+            $.ajax({
+                type: "POST",
+                url: "/login",
+                data: {'id_give':id, 'pw_give':pw},
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+
+                       }
+                })
+            }
+
+        function exist_id(id) {
+            let exist = 0
+            $.ajax({
+                type: "GET",
+                url: "/join",
+                data: {},
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    if (response['result'] == 'success') {
+                        let all_users = response['data']
+
+                        for (let i = 0; i < all_users.length; i++) {
+                            console.log(all_users[i]['userid'])
+                            if (all_users[i]['userid'] == id) {
+                                exist = 1
+                                break
+                            }
+                        }
+                    }
+                }
+            })
+            console.log(exist)
+            return exist
+        }
+
+        function is_id(id) {
+            let pass = 1
+
+            if (id.length != 7)
+                pass = 0
+            else if (id.charAt(0) != 'B' && id.charAt(0) != 'C')
+                pass = 0
+            else {
+                for (let i = 1; i < 7; i++) {
+                    if (!(id.charCodeAt(i) >= 48 && id.charCodeAt(i) <= 57)) {
+                        pass = 0
+                        break
+                    }
+                }
+            }
+            return pass
         }
 
 
@@ -103,7 +164,7 @@
     <form>
         <div class="form-group">
             <label for="userid">아이디</label>
-            <input type="text" class="form-control" id="id" placeholder="아이디" name="id_give"/>
+            <input type="text" class="form-control" id="id" placeholder="학번" name="id_give"/>
 
         </div>
         <div class="form-group">
@@ -112,7 +173,7 @@
         </div>
     </form>
     <button type="submit" class="btn btn-primary" onclick="openClose()">회원가입</button>
-    <button type="submit" class="btn btn-primary">로그인</button>
+    <button type="submit" class="btn btn-primary" onclick="login()">로그인</button>
 
 
 </div>
@@ -123,12 +184,12 @@
     <form>
         <div class="form-group">
             <label for="userid">아이디</label>
-            <input type="text" class="form-control" id="userid" placeholder="아이디" name="id_give"/>
+            <input type="text" class="form-control" id="userid" placeholder="학번" name="id_give"/>
             <!-- 마지막에 name과 app.py의 get 메소드 사용하는 부분이 일치해야 상응한다 -->
         </div>
         <div class="form-group">
-            <label for="username">사용자 이름</label>
-            <input type="text" class="form-control" id="username" placeholder="사용자 이름" name="name_give"/>
+            <label for="useremail">Email</label>
+            <input type="email" class="form-control" id="useremail" placeholder="Email">
 
         </div>
         <div class="form-group">
