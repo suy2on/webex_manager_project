@@ -36,7 +36,7 @@
             //let name = $('#username').val()
             let pw = $('#password').val()
             let repw = $('#re_password').val()
-            let email=$('#useremail').val()
+            let email = $('#useremail').val()
 
             if (!(id && pw && repw && email))
                 alert("모두 입력해주세요")
@@ -53,7 +53,7 @@
                     data: {
                         'id_give': id,
                         'pw_give': pw,
-                        'email_give':email
+                        'email_give': email
                     },
                     success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
                         if (response['result'] == 'success') {
@@ -66,19 +66,27 @@
             }
         }
 
-        function login(){
-            let id=$('#id').val()
-            let pw=$('#pw').val()
+        function login() {
+            let id = $('#id').val()
+            let pw = $('#pw').val()
 
             $.ajax({
                 type: "POST",
                 url: "/login",
-                data: {'id_give':id, 'pw_give':pw},
+                data: {'id_give': id, 'pw_give': pw},
                 success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
-
-                       }
-                })
-            }
+                    if (response['result'] == 'success') {
+                        alert(response['msg'])
+                        // If we succed we make a request to get the template
+                        window.location.href = "/home";
+                        // With this line we are making a simple GET request to Flask and the template returned is opened in the current window
+                    }
+                    else{
+                         alert(response['msg'])
+                    }
+                }
+            })
+        }
 
         function exist_id(id) {
             let exist = 0

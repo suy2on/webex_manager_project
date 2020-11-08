@@ -16,8 +16,7 @@
             crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-
-
+            console.log('open')
         });
 
 
@@ -49,14 +48,14 @@
 </head>
 <body>
 <div class="title">
-{{realuser}}님의 campus manager
+<h1>{{realuser}}님의 campus manager</h1>
 
 </div>
 <div class="menu">
     <div class="card" style="width: 18rem;">
         <img class="card-img-top" src="../static/class.jpg" alt="Card image cap">
         <div class="card-body">
-            <h3 class="card-text">강의실</h3>
+            <a href="/classroom"> <h3 class="card-text">강의실</h3></a>
         </div>
     </div>
     <div class="card" style="width: 18rem;">

@@ -16,8 +16,11 @@
             crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-
+            $('.class-list').empty()
+            show_class()
         });
+
+
 
         function openClose() {
             // add-box의 display 값이 block 이면(= 눈에 보이면)
@@ -29,6 +32,76 @@
                 $(".add-box").show();
             }
         }
+
+        function show_class(){
+            $.ajax({
+                type: "GET",
+                url: "/class",
+                data: {},
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    if (response['result'] == 'success') {
+                        let classname= response['classname'] //list
+                        let classurl= response['classurl']  //dict
+
+                        for(let i=0; i<classname.length; i++){
+                            let name=classname[i]
+                            let url=classurl[name]
+                            let tempHtml=`<div class="card w-1000">
+                                            <div class="card-body">
+                                                <h5 class="card-title">${name}</h5>
+                                                <a class="btn btn-primary" href=${url} role="button" target="_blank">강의보기</a>
+                                                <button class="btn btn-primary" type="submit" onclick="delete_class('${name}')">삭제하기</button>
+                                            </div>
+                                          </div>`
+
+                            $('.class-list').append(tempHtml)
+                        }
+                    }
+                }
+            })
+
+        }
+
+        function add() {
+            let new_class = $('.new-class').val()
+            let new_url = $('.new-url').val()
+
+
+            $.ajax({
+                type: "POST",
+                url: "/class",
+                data: {
+                    'class_give': new_class,
+                    'url_give': new_url
+                },
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    if (response['result'] == 'success') {
+                        alert(response['msg'])
+                        location.reload()
+                    }
+                }
+            })
+
+        }
+
+        function delete_class(classname){
+            $.ajax({
+                type: "POST",
+                url: "/class2",
+                data: {
+                    'classname_give': classname,
+                },
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    if (response['result'] == 'success') {
+                        alert(response['msg'])
+                        location.reload()
+                    }
+                }
+            })
+
+        }
+
+
 
 
     </script>
@@ -43,11 +116,12 @@
             padding-top: 20px;
         }
 
-        .add-bt{
+        .add-bt {
             margin: 50px auto;
             width: 100px;
         }
-        .class-list{
+
+        .class-list {
             margin: 40px auto;
             width: 750px;
         }
@@ -68,7 +142,7 @@
 </head>
 <body>
 <div class="title">
-    <h1>이수연님의 강의실</h1>
+    <h1>{{realuser}}님의 강의실</h1>
 </div>
 <div class="add-bt">
     <button onclick="openClose()">강의추가</button>
@@ -84,17 +158,11 @@
         webex URL: <input class="new-url">
     </p>
     <p>
-        <button>추가하기</button>
+        <button onclick="add()">추가하기</button>
     </p>
 </div>
 <div class="class-list">
-    <div class="card w-1000">
-        <div class="card-body">
-            <h5 class="card-title">강의이름</h5>
-            <a class="btn btn-primary" href="#" role="button">강의보기</a>
-            <button class="btn btn-primary" type="submit">삭제하기</button>
-        </div>
-    </div>
+
 </div>
 </body>
 </html>
