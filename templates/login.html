@@ -38,6 +38,11 @@
             let repw = $('#re_password').val()
             let email = $('#useremail').val()
 
+            let exist = 1
+            console.log(exist)
+
+            exist = exist_id(id)
+            console.log(exist)
             if (!(id && pw && repw && email))
                 alert("모두 입력해주세요")
             else if (!is_id(id))
@@ -80,35 +85,35 @@
                         // If we succed we make a request to get the template
                         window.location.href = "/home";
                         // With this line we are making a simple GET request to Flask and the template returned is opened in the current window
-                    }
-                    else{
-                         alert(response['msg'])
+                    } else {
+                        alert(response['msg'])
                     }
                 }
             })
         }
 
         function exist_id(id) {
-            let exist = 0
+            let exist = false;
             $.ajax({
                 type: "GET",
                 url: "/join",
                 data: {},
+                async: false, //동기식
                 success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
                     if (response['result'] == 'success') {
                         let all_users = response['data']
 
                         for (let i = 0; i < all_users.length; i++) {
                             console.log(all_users[i]['userid'])
+                            console.log(id)
                             if (all_users[i]['userid'] == id) {
-                                exist = 1
-                                break
+                                exist = true;
+                                break;
                             }
                         }
                     }
                 }
             })
-            console.log(exist)
             return exist
         }
 
