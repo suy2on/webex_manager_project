@@ -22,15 +22,161 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-
+            show_hw();
         });
+
+        function show_hw() {
+            $.ajax({
+                type: "GET",
+                url: "/hw",
+                data: {},
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    if (response['result'] == 'success') {
+                        let subjectList = response['subject'] //list
+                        let hwDict = response['hw']  //dict
+
+
+                        for (let i = 0; i < subjectList.length; i++) {
+                            let subject = subjectList[i]
+
+
+                            let tempHtml1 = `<p><div class="card">
+                                                <h5 class="card-header">${subject}<span class="oi oi-chevron-bottom"></span><span><button type="button"
+                                                                                                class="close"
+                                                                                                aria-label="Close" onclick="del_subject('${subject}')">
+                                                <span aria-hidden="true">&times;</span></button></span>
+                                                </h5>
+                                            <div class='card-body' id="${subject}">
+                                            </div>
+                                        </div></p>`
+
+                            $('.hw-list').append(tempHtml1);
+                            $('.custom-select').append(`<option value="${i}">${subject}</option>`)
+
+
+                            if (!isEmpty(hwDict)) {
+                                let hw = hwDict[subject]
+                                for (let j = 0; j < hw.length; j++) {
+                                    let main = hw[j]['main']
+                                    let sub = hw[j]['sub']
+                                    let day = hw[j]['day']
+                                    let tempHtml2 = `<div class="checkbox">
+                                                            <label>
+                                                            <input type="checkbox" value="">
+                                                            <h5 class="card-title" style="display: inline">${main}<span
+                                                                class="oi oi-chevron-bottom"></span><span><button type="button"
+                                                                                  class="close"
+                                                                                  aria-label="Close" onclick="del_hw('${subject}', '${j}')">
+                                                                <span aria-hidden="true">&times;</span></button></span></h5>
+                                                            </label>
+                                                            <p class="card-text">${sub}</p>
+                                                            <p><span class="badge badge-pill badge-secondary">${day}</span></p>
+                                                        </div>`
+
+                                    $('#' + subject).append(tempHtml2) //id변수로 받기
+
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+
+        }
+
+        function add_subject() {
+            let subject = $('.subject-input').val()
+            $.ajax({
+                type: "POST",
+                url: "/addsub",
+                data: {
+                    'subject_give': subject
+                },
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    if (response['result'] == 'success') {
+                        alert(response['msg'])
+                        location.reload()
+                    }
+                }
+            })
+
+        }
+
+        function add_hw() {
+            let subject = $('.custom-select option:selected').text()
+            let main = $('#hw-main').val()
+            let sub = $('#hw-sub').val()
+            let day = get_deadline()
+
+            $.ajax({
+                type: "POST",
+                url: "/addhw",
+                data: {
+                    'subject_give': subject,
+                    'main_give': main,
+                    'sub_give': sub,
+                    'day_give': day
+                },
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    if (response['result'] == 'success') {
+                        alert(response['msg'])
+                        location.reload()
+                    }
+                }
+            })
+
+        }
+
+        function del_subject(subject) {
+            console.log(subject)
+            $.ajax({
+                type: "POST",
+                url: "/delsub",
+                data: {
+                    'subject_give': subject
+                },
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    if (response['result'] == 'success') {
+                        alert(response['msg'])
+                        location.reload()
+                    }
+                }
+            })
+
+        }
+
+        function del_hw(subject, index) {
+            $.ajax({
+                type: "POST",
+                url: "/delhw",
+                data: {
+                    'subject_give': subject,
+                    'index_give': index
+                },
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    if (response['result'] == 'success') {
+                        alert(response['msg'])
+                        location.reload()
+                    }
+                }
+            })
+
+
+        }
 
         function get_deadline() {
             let date = document.getElementById("date").value;
             let time = document.getElementById("time").value;
-            console.log(time)
-            console.log(date)
 
+            return date + " " + time
+        }
+
+        function isEmpty(obj) {
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key))
+                    return false;
+            }
+            return true;
         }
 
     </script>
@@ -94,27 +240,26 @@
                         <span class="input-group-text">과목이름</span>
                     </div>
                     <select class="custom-select">
-                        <option selected>과목을 고르세요</option>
-                        //새로고침할때마다 보여주기
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option selected>---과목을 고르세요---</option>
+                        //새로고침할때마다 과목 새로고침
+
+
                     </select>
                 </div>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="hw-main">과제제목</span>
+                        <span class="input-group-text">과제제목</span>
                     </div>
                     <input type="text" class="form-control" aria-label="Default"
-                           aria-describedby="inputGroup-sizing-default">
+                           aria-describedby="inputGroup-sizing-default" id="hw-main">
                 </div>
 
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="hw-sub">과제설명</span>
+                        <span class="input-group-text">과제설명</span>
                     </div>
                     <input type="text" class="form-control" aria-label="Default"
-                           aria-describedby="inputGroup-sizing-default">
+                           aria-describedby="inputGroup-sizing-default" id="hw-sub">
                 </div>
 
                 <div class="input-group mb-3">
@@ -136,7 +281,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                <button type="button" onclick="get_deadline()" class="btn btn-primary">추가</button>
+                <button type="button" onclick="add_hw()" class="btn btn-primary">추가</button>
             </div>
         </div>
     </div>
@@ -159,13 +304,13 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroup-sizing-default">과목이름</span>
                     </div>
-                    <input type="text" class="form-control" aria-label="Default"
+                    <input type="text" class="subject-input" aria-label="Default"
                            aria-describedby="inputGroup-sizing-default">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                <button type="button" class="btn btn-primary">추가</button>
+                <button onclick="add_subject()" type="button" class="btn btn-primary">추가</button>
             </div>
         </div>
     </div>
@@ -173,27 +318,7 @@
 
 
 <div class="hw-list">
-    <div class="card">
-        <h5 class="card-header">Featured<span class="oi oi-chevron-bottom"></span><span><button type="button"
-                                                                                                class="close"
-                                                                                                aria-label="Close">
-            <span aria-hidden="true">&times;</span></button></span>
-        </h5>
-        <div class="card-body">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="">
-                    <h5 class="card-title" style="display: inline">Special title treatment<span
-                            class="oi oi-chevron-bottom"></span><span><button type="button"
-                                                                              class="close"
-                                                                              aria-label="Close">
-            <span aria-hidden="true">&times;</span></button></span></h5>
-                </label>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <p><span class="badge badge-pill badge-secondary"> 10/2 오후 6시 </span></p>
-            </div>
-        </div>
-    </div>
+
 </div>
 </body>
 </html>
