@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from pymongo import MongoClient  # pymongo를 임포트 하기(패키지 인스톨 먼저 해야겠죠?)
 from flask import session
+import bcrypt
 
 # import os
 # from models import db, User
@@ -37,12 +38,25 @@ def homework():
     user = session.get('user', None)
     return render_template('homework.html', realuser=user['userid'])
 
-@app.route('/join', methods=['GET'])
-def user_info():
-    all_users = list(db.register.find({}, {'_id': False}))
+#@app.route('/join', methods=['GET'])
+#def user_info():
+ #   all_users = list(db.register.find({}, {'_id': False}))
 
-    return jsonify({'result': 'success', 'msg': 'GET 연결되었습니다!', 'data': all_users})
+  #  return jsonify({'result': 'success', 'msg': 'GET 연결되었습니다!', 'data': all_users})
 
+@app.route('/exist', methods=['POST'])
+def exist_id():
+    id_receive=request.form['id_give']
+
+    all_users = list(db.register.find({}, {'_id': False})) #그대로 데이터 넘겨주면 안된다
+    # 비밀번호가 binary암호로 json화 될수 없음
+
+    #여기서 비교후 결과만 반환하는걸로
+    for user in all_users:
+        if (user['userid'] == id_receive) :
+            return jsonify({'result': 'exist'})
+
+    return jsonify({'result': 'pass'})
 
 @app.route('/join', methods=['POST'])
 def join():
@@ -52,6 +66,7 @@ def join():
     email_receive = request.form['email_give']
     print(id_receive)
 
+    pw_receive= bcrypt.hashpw(pw_receive.encode('utf-8'), bcrypt.gensalt())
     # 받은정보 db에 저장
     doc = {'userid': id_receive,
            'userpw': pw_receive,
@@ -72,7 +87,7 @@ def join():
     return jsonify({'result': 'success', 'msg': '회원가입완료!'})
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=[ 'POST'])
 def login():
     # db에서 로그인한 user의 이름가져오기
     id_receive = request.form['id_give']
@@ -80,12 +95,19 @@ def login():
 
     user = db.register.find_one({'userid': id_receive}, {'_id': False})
 
-    if user['userpw'] == pw_receive:
+    bcrypt.checkpw(pw_receive.encode('utf-8'), user['userpw'] )
+
+    if bcrypt.checkpw(pw_receive.encode('utf-8'), user['userpw'] ):
         session['user'] = user  # session에 로그인 한 사람의 register정보 저장
 
         return jsonify({'result': 'success', 'msg': '로그인 성공'})
     else:
         return jsonify({'result': 'false', 'msg': '아이디와 비밀번호가 일치하지 않습니다'})
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.pop('user',None)
+    return jsonify({'result': 'success', 'msg': '로그아웃 성공'})
 
 
 @app.route('/class', methods=['POST'])
@@ -139,6 +161,7 @@ def show_class():
     return jsonify({'result': 'success', 'classname': classname, 'classurl': classurl})
 
 
+
 @app.route('/hw', methods=['GET'])
 def show_hw():
     id = session.get('user', None)['userid']
@@ -149,6 +172,8 @@ def show_hw():
     hw = user['hw']  # hw dict
 
     return jsonify({'result': 'success', 'subject': subject, 'hw': hw})
+
+
 
 
 @app.route('/addsub', methods=['POST'])

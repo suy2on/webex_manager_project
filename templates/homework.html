@@ -86,20 +86,26 @@
 
         function add_subject() {
             let subject = $('.subject-input').val()
-            $.ajax({
-                type: "POST",
-                url: "/addsub",
-                data: {
-                    'subject_give': subject
-                },
-                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
-                    if (response['result'] == 'success') {
-                        alert(response['msg'])
-                        location.reload()
-                    }
-                }
-            })
 
+            if (exist_subject(subject))
+                alert("이미 추가한 과목입니다.")
+
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/addsub",
+                    data: {
+                        'subject_give': subject
+                    },
+                    success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                        if (response['result'] == 'success') {
+                            alert(response['msg'])
+                            location.reload()
+                        }
+                    }
+                })
+
+            }
         }
 
         function add_hw() {
@@ -179,15 +185,34 @@
             return true;
         }
 
+         function exist_subject(subject_name) {
+            let exist = false;
+            $.ajax({
+                type: "GET",
+                url: "/hw",
+                data: {},
+                async: false, //동기식
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    if (response['result'] == 'success') {
+                        let subject = response['subject']
+
+                        for (let i = 0; i < subject.length; i++) {
+                            if (subject[i] == subject_name) {
+                                exist = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            })
+            return exist
+        }
+
     </script>
     <style type="text/css">
 
         .title {
             width: 1000px;
-            height: 100px;
-            border-style: solid;
-            border-color: black;
-            text-align: center;
             margin: 40px auto;
             padding-top: 20px;
         }
@@ -207,7 +232,10 @@
 </head>
 <body>
 <div class="title">
-    <h1>{{realuser}}님의 과제</h1>
+    <div class="jumbotron" style="background-color:midnightblue">
+        <h1 style="color: aliceblue">{{realuser}}님의 과제관리</h1>
+        <p style="color: aliceblue">편리한 WEBEX접속과 과제관리</p>
+    </div>
 </div>
 <!-- Button trigger modal -->
 <div class="add-button">

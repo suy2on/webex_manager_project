@@ -20,20 +20,14 @@
         });
 
 
-
-
-
     </script>
     <style type="text/css">
         .title {
             width: 1000px;
-            height: 100px;
-            border-style: solid;
-            border-color: black;
-            text-align: center;
             margin: 40px auto;
             padding-top: 20px;
         }
+
 
         .card {
             margin: 100px auto;
@@ -48,20 +42,26 @@
 </head>
 <body>
 <div class="title">
-<h1>{{realuser}}님의 campus manager</h1>
+    <div class="jumbotron" style="background-color:midnightblue">
 
+        <h1 style="color: aliceblue">{{realuser}}님의 HOME</h1>
+        <p style="color: aliceblue">편리한 WEBEX접속과 과제관리</p>
+<!--        <hr style="border-color: aliceblue">-->
+
+    </div>
 </div>
+
 <div class="menu">
     <div class="card" style="width: 18rem;">
         <img class="card-img-top" src="../static/class.jpg" alt="Card image cap">
         <div class="card-body">
-            <a href="/classroom"> <h3 class="card-text">강의실</h3></a>
+            <a href="/classroom"><h3 class="card-text">강의실</h3></a>
         </div>
     </div>
     <div class="card" style="width: 18rem;">
         <img class="card-img-top" src="../static/homework.jpg" alt="Card image cap">
         <div class="card-body">
-            <a href="/homework"> <h3 class="card-text">과제</h3></a>
+            <a href="/homework"><h3 class="card-text">과제</h3></a>
         </div>
     </div>
 
