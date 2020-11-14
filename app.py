@@ -104,10 +104,10 @@ def login():
     else:
         return jsonify({'result': 'false', 'msg': '아이디와 비밀번호가 일치하지 않습니다'})
 
-@app.route('/logout', methods=['GET'])
+@app.route('/logout')
 def logout():
     session.pop('user',None)
-    return jsonify({'result': 'success', 'msg': '로그아웃 성공'})
+    return redirect("/")
 
 
 @app.route('/class', methods=['POST'])

@@ -14,6 +14,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+     <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+
     <script type="text/javascript">
         $(document).ready(function () {
             console.log('open')
@@ -22,6 +29,9 @@
 
     </script>
     <style type="text/css">
+        *{
+            font-family: 'Do Hyeon', sans-serif;
+        }
         .title {
             width: 1000px;
             margin: 40px auto;
@@ -41,29 +51,40 @@
     </style>
 </head>
 <body>
-<div class="title">
+<div class="title" >
     <div class="jumbotron" style="background-color:midnightblue">
 
         <h1 style="color: aliceblue">{{realuser}}님의 HOME</h1>
         <p style="color: aliceblue">편리한 WEBEX접속과 과제관리</p>
-<!--        <hr style="border-color: aliceblue">-->
-
+        <!--        <hr style="border-color: aliceblue">-->
     </div>
+    <nav class="navbar navbar-expand-sm bg-secondary navbar-dark ">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/home">HOME</a></li>
+            <li class="nav-item"><a class="nav-link" href="/logout">LOGOUT</a></li>
+        </ul>
+    </nav>
 </div>
 
+
 <div class="menu">
+
+
     <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="../static/class.jpg" alt="Card image cap">
-        <div class="card-body">
-            <a href="/classroom"><h3 class="card-text">강의실</h3></a>
+        <img class="card-img-top" src="../static/video-1606945_640.png" alt="Card image cap">
+        <div class="card-body" style="border-top: solid; border-top-color: lightgray">
+            <a href="/classroom"><h3 class="card-text" style="color: gray">강의실</h3></a>
         </div>
     </div>
+
+
     <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="../static/homework.jpg" alt="Card image cap">
-        <div class="card-body">
-            <a href="/homework"><h3 class="card-text">과제</h3></a>
+        <img class="card-img-top" src="../static/book-2389229_640.png" alt="Card image cap">
+        <div class="card-body" style="border-top: solid; border-top-color: lightgray">
+            <a href="/homework"><h3 class="card-text" style="color: gray">과제</h3></a>
         </div>
     </div>
+
 
 </div>
 

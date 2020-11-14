@@ -18,6 +18,11 @@
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
 
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
 
     <script type="text/javascript">
 
@@ -85,7 +90,7 @@
         }
 
         function add_subject() {
-            let subject = $('.subject-input').val()
+            let subject = $('#subject-input').val()
 
             if (exist_subject(subject))
                 alert("이미 추가한 과목입니다.")
@@ -185,7 +190,7 @@
             return true;
         }
 
-         function exist_subject(subject_name) {
+        function exist_subject(subject_name) {
             let exist = false;
             $.ajax({
                 type: "GET",
@@ -208,13 +213,28 @@
             return exist
         }
 
+        function class_reset() {
+            $('.subject-input').val('');
+        }
+
+        function hw_reset() {
+            $('#hw-sub').val('');
+            $('#hw-main').val('');
+            $('.custom-select').val('default').prop("selected", true);
+        }
+
     </script>
     <style type="text/css">
+
+        *{
+            font-family: 'Do Hyeon', sans-serif;
+        }
 
         .title {
             width: 1000px;
             margin: 40px auto;
             padding-top: 20px;
+
         }
 
         .hw-list {
@@ -231,14 +251,20 @@
     </style>
 </head>
 <body>
-<div class="title">
+<div class="title" >
     <div class="jumbotron" style="background-color:midnightblue">
         <h1 style="color: aliceblue">{{realuser}}님의 과제관리</h1>
-        <p style="color: aliceblue">편리한 WEBEX접속과 과제관리</p>
+        <p style="color: aliceblue">여러과목의 과제를 한번에 관리해보세요!</p>
     </div>
+    <nav class="navbar navbar-expand-sm bg-secondary navbar-dark ">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/home">HOME</a></li>
+            <li class="nav-item"><a class="nav-link" href="/logout">LOGOUT</a></li>
+        </ul>
+    </nav>
 </div>
 <!-- Button trigger modal -->
-<div class="add-button">
+<div class="add-button" >
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-subject">
         과목추가
     </button>
@@ -251,98 +277,102 @@
     </button>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="add-hw" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">과제추가</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="add-hw" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">과제추가</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="hw_reset()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">과목이름</span>
+                        </div>
+                        <select class="custom-select">
+                            <option selected value="default">---과목을 고르세요---</option>
+                            //새로고침할때마다 과목 새로고침
+
+
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">과제제목</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Default"
+                               aria-describedby="inputGroup-sizing-default" id="hw-main">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">과제설명</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Default"
+                               aria-describedby="inputGroup-sizing-default" id="hw-sub">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="hw-date">마감날짜</span>
+                        </div>
+                        <input type="date" id="date" class="form-control" aria-label="Default"
+                               aria-describedby="inputGroup-sizing-default">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="hw-time">마감시간</span>
+                        </div>
+                        <input type="time" id="time" class="form-control" aria-label="Default"
+                               aria-describedby="inputGroup-sizing-default">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button onclick="hw_reset()" type="button" class="btn btn-secondary" data-dismiss="modal">닫기
+                    </button>
+                    <button type="button" onclick="add_hw()" class="btn btn-primary">추가</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">과목이름</span>
-                    </div>
-                    <select class="custom-select">
-                        <option selected>---과목을 고르세요---</option>
-                        //새로고침할때마다 과목 새로고침
+        </div>
 
+    </div>
 
-                    </select>
+    <!-- Modal -->
+
+    <div class="modal fade" id="add-subject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">과목추가</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="class_reset()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">과제제목</span>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">과목이름</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Default"
+                               aria-describedby="inputGroup-sizing-default" id="subject-input">
                     </div>
-                    <input type="text" class="form-control" aria-label="Default"
-                           aria-describedby="inputGroup-sizing-default" id="hw-main">
                 </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">과제설명</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Default"
-                           aria-describedby="inputGroup-sizing-default" id="hw-sub">
+                <div class="modal-footer">
+                    <button onclick="class_reset()" type="button" class="btn btn-secondary" data-dismiss="modal">닫기
+                    </button>
+                    <button onclick="add_subject()" type="button" class="btn btn-primary">추가</button>
                 </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="hw-date">마감날짜</span>
-                    </div>
-                    <input type="date" id="date" class="form-control" aria-label="Default"
-                           aria-describedby="inputGroup-sizing-default">
-                </div>
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="hw-time">마감시간</span>
-                    </div>
-                    <input type="time" id="time" class="form-control" aria-label="Default"
-                           aria-describedby="inputGroup-sizing-default">
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                <button type="button" onclick="add_hw()" class="btn btn-primary">추가</button>
             </div>
         </div>
     </div>
-
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="add-subject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">과목추가</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-default">과목이름</span>
-                    </div>
-                    <input type="text" class="subject-input" aria-label="Default"
-                           aria-describedby="inputGroup-sizing-default">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                <button onclick="add_subject()" type="button" class="btn btn-primary">추가</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <div class="hw-list">

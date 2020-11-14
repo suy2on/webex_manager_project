@@ -14,12 +14,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+     <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+
     <script type="text/javascript">
         $(document).ready(function () {
             $('.class-list').empty()
             show_class()
         });
-
 
 
         function openClose() {
@@ -33,20 +42,20 @@
             }
         }
 
-        function show_class(){
+        function show_class() {
             $.ajax({
                 type: "GET",
                 url: "/class",
                 data: {},
                 success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
                     if (response['result'] == 'success') {
-                        let classname= response['classname'] //list
-                        let classurl= response['classurl']  //dict
+                        let classname = response['classname'] //list
+                        let classurl = response['classurl']  //dict
 
-                        for(let i=0; i<classname.length; i++){
-                            let name=classname[i]
-                            let url=classurl[name]
-                            let tempHtml=`<div class="card w-1000">
+                        for (let i = 0; i < classname.length; i++) {
+                            let name = classname[i]
+                            let url = classurl[name]
+                            let tempHtml = `<div class="card w-1000">
                                             <div class="card-body">
                                                 <h5 class="card-title">${name}</h5>
                                                 <a class="btn btn-primary" href=${url} role="button" target="_blank">강의보기</a>
@@ -63,14 +72,12 @@
         }
 
         function add() {
-            let new_class = $('.new-class').val()
-            let new_url = $('.new-url').val()
+            let new_class = $('#new-class').val()
+            let new_url = $('#new-url').val()
 
-            if(exist_class(new_class)){
+            if (exist_class(new_class)) {
                 alert("이미 추가하신 수업입니다.")
-            }
-
-            else {
+            } else {
                 $.ajax({
                     type: "POST",
                     url: "/class",
@@ -89,7 +96,7 @@
 
         }
 
-        function delete_class(classname){
+        function delete_class(classname) {
             $.ajax({
                 type: "POST",
                 url: "/class2",
@@ -130,64 +137,101 @@
             return exist
         }
 
-
-
+        function reset() {
+            $('#new-class').val('');
+            $('#new-url').val('');
+        }
 
     </script>
-    <style type="text/css">.title {
-            width: 1000px;
-            margin: 40px auto;
-            padding-top: 20px;
+    <style type="text/css">
+        *{
+            font-family: 'Do Hyeon', sans-serif;
         }
+        .title {
+        width: 1000px;
+        margin: 40px auto;
+        padding-top: 20px;
+    }
 
 
-        .add-bt {
-            margin: 50px auto;
-            width: 100px;
-        }
+    .add-bt {
+        margin: 50px auto;
+        width: 100px;
+    }
 
-        .class-list {
-            margin: 40px auto;
-            width: 750px;
-        }
+    .class-list {
+        margin: 40px auto;
+        width: 750px;
+    }
 
-        .add-box {
-            width: 500px;
-            height: 300px;
-            border-style: solid;
-            border-color: black;
-            text-align: center;
-            margin: 40px auto;
-            padding-top: 70px;
+    .add-box {
+        width: 500px;
+        height: 300px;
+        border-style: solid;
+        border-color: black;
+        text-align: center;
+        margin: 40px auto;
+        padding-top: 70px;
 
-        }
+    }
 
 
     </style>
 </head>
 <body>
-<div class="title">
+<div class="title" >
     <div class="jumbotron" style="background-color:midnightblue">
         <h1 style="color: aliceblue">{{realuser}}님의 강의실</h1>
-        <p style="color: aliceblue">편리한 WEBEX접속과 과제관리</p>
+        <p style="color: aliceblue">단 한번의 WEBEX URL추가로 한 학기동안 강의실 접속이 편리해집니다! </p>
     </div>
+    <nav class="navbar navbar-expand-sm bg-secondary navbar-dark ">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/home">HOME</a></li>
+            <li class="nav-item"><a class="nav-link" href="/logout">LOGOUT</a></li>
+        </ul>
+    </nav>
 </div>
 <div class="add-bt">
-    <button onclick="openClose()">강의추가</button>
+    <!-- Button trigger modal -->
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-class">
+        강의추가
+    </button>
 </div>
-<div class="add-box" style="display: none">
-    <h4>
-        강의추가하기
-    </h4>
-    <p>
-        강의이름: <input class="new-class">
-    </p>
-    <p>
-        webex URL: <input class="new-url">
-    </p>
-    <p>
-        <button onclick="add()">추가하기</button>
-    </p>
+
+<!-- Modal -->
+<div class="modal fade" id="add-class" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">강의추가</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="reset()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">강의명</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Default"
+                           aria-describedby="inputGroup-sizing-default" id="new-class">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">WEBEX URL</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Default"
+                           aria-describedby="inputGroup-sizing-default" id="new-url">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="reset()" type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                <button onclick="add()" type="button" class="btn btn-primary">추가</button>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="class-list">
 
