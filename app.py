@@ -1,12 +1,9 @@
 from flask import Flask, render_template, jsonify, request, redirect
 import requests
-from bs4 import BeautifulSoup
-from pymongo import MongoClient  # pymongo를 임포트 하기(패키지 인스톨 먼저 해야겠죠?)
+from pymongo import MongoClient  # pymongo를 임포트 하기
 from flask import session
 import bcrypt
 
-# import os
-# from models import db, User
 
 app = Flask(__name__)
 client = MongoClient('localhost', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
@@ -37,12 +34,6 @@ def classroom():
 def homework():
     user = session.get('user', None)
     return render_template('homework.html', realuser=user['userid'])
-
-#@app.route('/join', methods=['GET'])
-#def user_info():
- #   all_users = list(db.register.find({}, {'_id': False}))
-
-  #  return jsonify({'result': 'success', 'msg': 'GET 연결되었습니다!', 'data': all_users})
 
 @app.route('/exist', methods=['POST'])
 def exist_id():
